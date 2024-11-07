@@ -1,26 +1,52 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <AppHeader :cartItemCount="cart.length" @toggle-cart="toggleCart" />
+    <ProductList @add-to-cart="addToCart" />
+    <ShoppingCart
+      :cart="cart"
+      :isCartOpen="isCartOpen"
+      @update-cart="updateCart"
+      @close-cart="toggleCart"
+    />
+    <AppFooter />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import AppHeader from "./components/Header.vue";
+import AppFooter from "./components/Footer.vue";
+import ProductList from "./components/ProductList.vue";
+import ShoppingCart from "./components/Cart.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    AppHeader,
+    AppFooter,
+    ProductList,
+    ShoppingCart,
+  },
+  data() {
+    return {
+      cart: [],
+      isCartOpen: false,
+    };
+  },
+  methods: {
+    toggleCart() {
+      this.isCartOpen = !this.isCartOpen;
+    },
+    addToCart(product) {
+      const existingProduct = this.cart.find((item) => item.id === product.id);
+      if (existingProduct) {
+        existingProduct.quantity += product.quantity;
+      } else {
+        this.cart.push(product);
+      }
+    },
+    updateCart(updatedCart) {
+      this.cart = updatedCart;
+    },
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
